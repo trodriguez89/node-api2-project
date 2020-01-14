@@ -22,16 +22,32 @@ router.get("/:id", (request, response) => {
     const id = request.params.id;
     db.findById(id)
         .then(data => {
-            if (!data) {
-                response.status(404).json({message: "The post with the specified ID does not exist."})
-            } else {
+            if (data) {
                 response.status(200).json(data)
+            } else {
+                response.status(404).json({ message: "The post with the specified ID does not exist." })
             }
         })
         .catch(error => {
             console.log(error)
-            response.status(500).json({error: "The post information could not be retrieved"})
+            response.status(500).json({ error: "The post information could not be retrieved" })
         })
-})
+});
+
+router.get("/:id/comments", (request, response) => {
+    const id = request.params.id;
+    db.findCommentById(id)
+    .then(data => {
+        if(!data){
+            response.status(404).json({message: "The post with the specified ID does not exist"})
+        } else {
+            response.status(200).json(data)
+        }
+    })
+    .catch(error => {
+        console.log(error)
+        response.status(500).json({message: "The comments information could not be retrieved."})
+    })
+});
 
 module.exports = router;
